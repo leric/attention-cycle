@@ -1,0 +1,291 @@
+## Abstract
+
+*This is a position paper.* Current agent systems pursue autonomy by making agents run longer with less human input. For well-defined, verifiable tasks this is the right direction. But for **intent-bound work** — work whose value depends on deciding *what* should be done, not only on doing it correctly — the bottleneck is not agent autonomy but intent specification. When intent is under-specified, autonomy does not remove supervision; it converts the human into a runtime specifier who clarifies, redirects, approves, and repairs agent work as ambiguities surface during execution. We call this continuous attention cost the **supervision tax** of under-specified intent, and it scales with agent parallelism while human attention does not.
+
+This paper proposes **document-mediated collaboration** as a way to cut that tax without removing the human from the loop. The human and a foreground AI use deep-focus sessions to think the work through; for the executable slice, they externalize intent, constraints, context, and definitions of done into durable task documents. Once clarified, these documents become executable contracts for background agents, which work asynchronously and write results back. The human re-enters through a decision queue and periodic review rather than continuous supervision.
+
+We call this operating rhythm the **Attention Cycle**: Deep Focus → Parallel Execution → Decision Queue, supported by an independent review perspective that prevents the cycle from collapsing into an epistemic echo chamber. The cycle treats human attention as the scarce, fragile resource it is — invested in thinking, protected during execution, and re-engaged only at decision boundaries. Empirical validation of supervision-tax reduction is left to future work.
+
+## 1. Introduction
+
+### 1.1 The wrong problem: removing the human
+
+Current agent systems are largely organized around one ambition: make agents more autonomous. They should plan further, run longer, recover from failures, coordinate with tools, and require less human input. For routine, verifiable, well-specified tasks, this is the right direction. If the task is clear, the success condition is objective, and the cost of error is bounded, the best interface is often no interface at all.
+
+But many tasks are not like this. Research, product design, architecture, writing, strategy, and complex engineering belong to what we will call **intent-bound work**: work whose value depends on *what should be done*, not only on whether the doing is technically correct. In intent-bound work, deciding what to attempt, what to leave out, and what "good" means is itself most of the value. The human is not in the loop because they type commands; they are in the loop because they supply intent, judgment, taste, context, and accountability. Removing them does not save labor — it removes the source of value.
+
+The real problem is therefore not how to remove the human. It is how to remove the wrong kind of human involvement.
+
+The human should not be supervising every intermediate step, answering clarification questions at runtime, approving partial outputs, and repairing agent drift. But the human must remain deeply engaged where their judgment matters: specifying intent, choosing direction, evaluating tradeoffs, and deciding whether the result is good enough.
+
+This paper argues that the key bottleneck in serious human–AI work is not agent autonomy, but **supervision tax**: the continuous attention cost imposed on the human when agents run on intent that was not specified well enough to run without them.
+
+The goal is not to move the human out of the loop. The goal is to move the human out of runtime supervision.
+
+### 1.2 Supervision tax comes from under-specified intent
+
+A common explanation for supervision is that agents are still not capable enough. This is partly true, but incomplete. Even very capable agents require supervision when the task they receive is under-specified.
+
+For an agent to act autonomously, it must make decisions along the way. If the task does not carry enough intent, context, constraints, and definition of done, the agent fills the gaps by inference. Some inferences are harmless. Others encode assumptions the human never agreed to. As execution proceeds, these hidden assumptions surface as clarification requests, partial misalignments, unexpected choices, and results that are technically competent but directionally wrong.
+
+At that point, the human becomes a runtime specifier. They clarify what should have been clarified earlier, redirect the agent after it has already deviated, approve fragments whose purpose is still unstable, and repair outputs generated from implicit assumptions. The agent may be autonomous in the narrow sense that it can keep taking actions. But the work is not autonomous, because the human must keep re-entering the process to supply missing specification.
+
+This gives the first half of the paper's opening claim:
+
+> Autonomy does not eliminate supervision when intent is under-specified; it relocates it from the agent's runtime into the human's attention.
+> 
+
+The second half follows from how autonomy scales. One agent on under-specified intent produces a stream of clarification requests, partial outputs, and decision points flowing back to the human. Ten agents in parallel produce ten such streams converging on the same attention. Parallelism does not absorb under-specification; it concentrates it into more concurrent surface area than one human can keep up with:
+
+> The more parallel the agents, the more under-specified intent amplifies into supervision tax — clarification load scales with agents; human attention does not.
+> 
+
+Supervision tax is therefore not a UI problem nor a temporary model limitation. It is the runtime cost of skipped clarification, scaled by parallelism.
+
+### 1.3 AI-assisted clarification and executable documents
+
+The frontier of agent design is moving in exactly the direction that the previous section made worrying: toward longer-running, more autonomous agents. The ambition is to run further on each invocation, recover from more failures, coordinate more tools, and call back to the human less often. For routine work, this is genuine progress. For intent-bound work, however, it raises the bar on what the agent is given to start with. The longer and more autonomously an agent operates, the more weight its initial specification has to carry — every gap, ambiguity, or unstated constraint becomes either an unsupervised wrong turn or a runtime callback to the human. **More-autonomous agents do not weaken the demand for clarified intent; they sharpen it.**
+
+Producing clarified intent of that quality is itself difficult, and it is where chat-form AI is at its strongest. A capable foreground AI is a *thinking partner* — exposing ambiguity, pushing back on vague claims, forcing precision — which makes the intent-bound work that resists agent automation paradoxically well-served by AI as a discussion medium. The pattern this paper proposes is to use that strength deliberately: the human and a foreground AI think the work through together, and materialize the parts ready to commit as durable documents that background agents can act on. §2 develops the document side; §3 develops the attention rhythm around it.
+
+This gives the operating pattern this paper proposes:
+
+> **Document-mediated collaboration.** A human and a foreground AI clarify intent together in conversation; the result of that clarification is materialized as an executable document; background agents act on the document asynchronously and write results back; the human re-enters through review and decision rather than continuous supervision.
+> 
+
+Chat is where thinking happens. Documents are where clarified intent runs.
+
+### 1.4 The Attention Cycle
+
+§1.3 located the irreplaceable human contribution at *upstream clarification*. That contribution has an awkward property: it does not scale. Clarification cannot be parallelized across many humans without losing the coherence that gives it value; it cannot be sped up by pushing harder. It is bound to a fixed, fragile resource — the human's attention. Document-mediated collaboration removes runtime supervision; it does not remove the *upstream* attention cost of clarification itself. The remaining lever is to make that attention as effective as possible.
+
+Attention is scarce in two senses, and the cycle has to address both.
+
+It is scarce in **quantity**. Recall §1.2's closing line: *clarification load scales with agents; human attention does not.* As more agents run in parallel, more clarification work converges on one fixed attention budget. Throwing capacity at the problem does not work, because there is only one head.
+
+It is scarce in **quality**, in a way pure budgeting misses. The deep, sustained focus that clarification work depends on takes effort to enter, is easily disrupted, and is slow to rebuild. The real cost of an interruption is not the minute spent answering it; it is the focus state that has to be reconstructed afterward — and the flow state, if any, that is lost in the process. The payoff of *protected* attention is therefore non-linear: one uninterrupted hour routinely outperforms two half-hours fragmented by clarification pings, and a sustained flow state can outperform either by a wide margin.
+
+Making upstream clarification efficient is therefore an attention-management problem. The cycle has two jobs: spend the human's limited attention only where it adds value, and *protect* the uninterrupted focus state under which that attention is actually worth spending.
+
+The inspiration comes from **Getting Things Done**: externalize open loops into a trusted system so nothing competes for attention except what genuinely needs it now. Document-mediated collaboration extends that move into AI-mediated work — once intent is materialized into an executable document, the running task lives in the document and the agents acting on it, not in the human's head.
+
+The **Attention Cycle** turns these principles into an operating rhythm:
+
+```
+Deep Focus → Parallel Execution → Decision Queue → Deep Focus
+```
+
+with **Review** as a structurally separate attention slot that challenges the cycle from outside. Each phase is defined by the *kind* of attention it requires — or deliberately does not: **Deep Focus** is undivided attention spent thinking with a foreground AI; **Parallel Execution** requires none; **Decision Queue** batches judgment on the human's terms; **Review** is a context-independent perspective that keeps the cycle from collapsing into an echo chamber. §3 develops each phase in turn.
+
+### 1.5 Contributions
+
+Against the diagnosis developed above — that serious human–AI work pays a **supervision tax** whenever autonomous agents run on under-specified intent — this paper makes two constructive contributions.
+
+First, it proposes **document-mediated collaboration** as the mechanism for cutting that tax: chat with a foreground AI handles the thinking, executable documents handle the running work, and the human re-enters through review and decision rather than continuous supervision. §2 develops it.
+
+Second, it defines the **Attention Cycle** as the operating rhythm that organizes the human's attention across **Deep Focus**, **Parallel Execution**, **Decision Queue**, and an independent **Review** perspective, so that agent capability can keep scaling without scaling demands on the human. §3 develops it.
+
+Taken together, these contributions are an attempt at what we take to be the **actual productivity bottleneck of the current AI era**: the capable-agent side of human–AI work has advanced extraordinarily fast; the efficient-human side has not. This paper is an attempt to close that gap from the human side.
+
+## **2. From Supervision Tax to Executable Documents**
+
+### **2.1 Supervision tax as the cost of weak specification**
+
+For intent-bound work, stronger agents do not reduce the need for specification. They increase the consequence of getting specification wrong.
+
+A routine task can often be executed from a short instruction because much of the intent is implicit in the task type. If the goal is to resize an image, run a test suite, summarize a document, or file a ticket, the agent can rely on established conventions and objective completion criteria. But intent-bound work is different. The difficult part is not only executing the task, but deciding what the task should mean: what direction matters, what constraints are binding, what tradeoffs are acceptable, and what “good” means.
+
+When that intent is not made explicit, the agent fills the gaps by inference. A weak agent may fail early. A stronger agent can proceed further, making more decisions along the way, each one based on assumptions the human may never have authorized. The result can be competent execution in the wrong direction.
+
+This is the supervision tax of under-specified intent. The human must re-enter during execution to clarify, redirect, approve, or repair what should have been specified before the agent started.
+
+The important point is not that agents are incapable. It is that autonomy raises the standard for the input artifact. The more capable and long-running the agent becomes, the more the initial task description has to carry.
+
+```
+more autonomous agents → higher specification burden
+under-specified intent → runtime supervision tax
+```
+
+This is why reducing supervision tax requires better upstream clarification, not merely stronger downstream execution.
+
+### **2.2 Thinking with a foreground AI**
+
+If stronger agents raise the specification burden, the next question is how high-quality specifications are produced. The answer turns out to be indirect. A good specification is not the thing the human is producing during a Deep Focus session — it is a *byproduct* of something larger. What is actually being produced is a deeper understanding of the work itself, of which the specification is only the externalized residue.
+
+For intent-bound work, the human rarely begins with a complete view of the problem already formed in their head. They begin with a direction, a concern, a partial judgment about what might matter, a hunch they have not yet examined. Most of the work is not transcribing intent that already exists; it is *forming* it. To do that, the human has to surface implicit constraints, test framings, reconsider assumptions, separate what is decided from what is still open, and figure out what “good” even means in this case. This is thinking — slow, structured, often uncomfortable — and it is what intent-bound work actually consists of.
+
+This is also where chat-form AI is at its strongest. A capable foreground AI is a *thinking partner*: it can hold context across a long line of reasoning, propose alternative framings, push back on vague claims, raise considerations the human has not yet weighed, and force precision where it is being avoided. Its primary value is not that it writes good specifications. Its primary value is that it makes the *human’s own thinking* sharper. The human leaves a good Deep Focus session understanding the problem better than they did going in — and that deepened understanding is the real product. Specifications are one downstream form of it, not the point of it.
+
+The interaction is therefore:
+
+```
+human and AI think together
+ → human’s understanding deepens
+ → clarified intent emerges as one product among others
+```
+
+Some of what emerges from these sessions is internal and never externalized at all: a shift in how the human sees the problem, a revised intuition, a discarded direction, a quietly upgraded mental model. Some is externalized but not executable on its own: macro plans, design notes, framings, decisions worth recording, syntheses of reference material. And some — when a slice of the thinking has converged enough to commit — becomes a specification precise enough that another agent can act on it. The framework cares centrally about this last category, because it is what enables asynchronous execution; but it is important to be honest that it is a *subset* of what Deep Focus produces, not the whole of it.
+
+### **2.3 Materializing clarified intent into executable documents**
+
+A chat session is a good medium for thinking, but a poor substrate for asynchronous work. It is exploratory, linear, full of discarded alternatives, and bound to the conversation that produced it. The durable products of a Deep Focus session have to be concluded and externalized into the workspace if anything other than the human — and in many cases, even the human at a later time — is going to act on them.
+
+Not all of those products are task documents. The same document workspace naturally accumulates a broader **knowledge substrate**: notes, plans, framings, decisions, reference syntheses, and other durable outputs of Deep Focus that are not themselves executable. Task documents live alongside this substrate, link into it for context, and are read by background agents against it. The substrate is the surrounding ground that makes any single task document coherent. The framework assumes such a substrate exists and is reasonably maintained, but it does not propose a knowledge-management methodology of its own. Curation of the substrate is a real concern (§5.1); it is not the subject of this paper.
+
+Within that substrate, a **task document** is the *executable subset* — the kind of document that turns a clarified slice of intent into a stable artifact a background agent can act on. It records the task’s intent, context, constraints, accepted decisions, open questions, definition of done, and later execution results. It becomes the single source of truth for that piece of work: the background agent reads from it, the human reviews through it, the review perspective critiques it, and execution history accumulates back into it.
+
+This is what streamlines the collaboration. For each piece of executable work, clarification, execution, and review no longer fragment across chat threads, agent logs, and side notes that must be reconciled later. They flow through one artifact:
+
+```
+conversation → task document → agent execution → writeback → review
+```
+
+The document becomes an **executable contract** when it is rich enough for a background agent to act on and explicit enough for completion to be judged without returning to the human for live clarification. It does not need to encode everything as rigid fields. Much of the specification can remain prose. What matters is that the document — together with the surrounding knowledge substrate it links into — carries enough context, constraints, and acceptance criteria for the agent to know whether it should complete the task, report a blocker, or raise a decision request.
+
+This gives the central transformation of the framework:
+
+```
+clarified intent → durable task document → executable contract
+```
+
+In this sense, document-mediated collaboration is not simply “using documents with agents.” It is a coordination pattern with a sharp focus: chat is where thinking happens, the knowledge substrate is where its durable outputs accumulate, executable task documents are the runnable subset of that substrate, and review is where human judgment re-enters without continuous monitoring.
+
+## **3. The Attention Cycle**
+
+Section 2 described how Deep Focus thinking produces durable artifacts — including, for the executable slice, task documents agents can act on. This moves specification out of runtime supervision and into upstream clarification. But it does not remove the upstream cost of the thinking itself. That thinking still requires human attention, and that attention remains scarce, fragile, and non-scalable.
+
+The **Attention Cycle** answers that question:
+
+```
+Deep Focus → Parallel Execution → Decision Queue → Deep Focus
+```
+
+with **Review** as a structurally separate attention slot that provides independent challenge to the cycle.
+
+The cycle is built around a simple principle: anything that does not require the human's attention right now should not be in it. This principle echoes Getting Things Done: open loops occupy attention until they are externalized into a trusted system. In document-mediated collaboration, executable documents extend that principle to agentic work. Once intent has been clarified and materialized into a document, the running task no longer has to live in the human's attention. It can live in the document and in the agents acting on it.
+
+The cycle therefore separates four attention modes: deep thinking, zero-attention execution, batched judgment, and independent review.
+
+### **3.1 Deep Focus: thinking as investment**
+
+Deep Focus is the phase where the human's attention is deliberately spent.
+
+The human engages one objective with full attention: defining intent, choosing direction, evaluating tradeoffs, naming constraints, and deciding what “good” means. A foreground AI participates as a *thinking partner*. It helps surface hidden assumptions, compare alternatives, structure context, ask what is missing, push back on vague claims, and sharpen the human’s own understanding of the problem.
+
+The output of Deep Focus is, first, progress in the human’s understanding of the objective — a sharper view of the problem that may not be externalized at all. Where the thinking has converged enough to commit, it also produces durable artifacts in the workspace: notes, plans, decisions, and, for the executable slice, one or more task documents that carry enough clarified intent for background agents to act without live supervision.
+
+What sets Deep Focus apart from ordinary attentive work is *uninterruption*. The quality of thinking does not scale linearly with minutes spent on a problem; it scales with whether those minutes are continuous enough to enter the cognitive states where deep work actually happens. Two effects on the negative side make this asymmetry sharp:
+
+- **Recovery cost.** Empirical studies of knowledge workers find that after an interruption, the average time to return to the original task at comparable depth is on the order of 23 minutes (Mark et al., 2008). The minute spent answering the interruption is a small fraction of its real cost.
+- **Attention residue.** Even when the interrupting task is brief, part of attention remains attached to the prior context (Leroy, 2009); the worker's effective cognitive bandwidth on the resumed task is degraded for some time afterward.
+
+Flow research adds the positive-side counterpart: when uninterrupted focus is sustained long enough, the worker enters a state in which performance on cognitively demanding work is substantially elevated above baseline (Csikszentmihalyi, 1990). Flow is fragile — a single interruption can dissolve it — and not reliably re-enterable on the same day.
+
+The compound effect is that Deep Focus is not merely attention-expensive but attention-fragile, and the value lost to interruption is non-linear in interruption frequency. Thinking a problem through to coherence — and, where ready, externalizing it as an executable contract whose intent, constraints, context, and acceptance criteria fit together — depends on assembling exactly this kind of attention, which is far easier to break than to rebuild.
+
+The purpose of the rest of the cycle is therefore partly protective. Parallel Execution, Decision Queue, and Review are designed so that Deep Focus is not continuously invaded by agent activity.
+
+### **3.2 Parallel Execution: no attention required**
+
+Parallel Execution is the phase where background agents act on clarified documents without consuming human attention.
+
+A background agent picks up a task document, reads the specification, follows its context links, executes the task, verifies what it can, and writes results back into the same document system. Depending on the task, the writeback may include changed artifacts, logs, test results, summaries, blockers, follow-up tasks, or decision requests.
+
+The important design target is not simply that execution is asynchronous. It is that execution does not create a live supervision burden.
+
+The human should not have to watch the agent work, answer incidental questions as they appear, or keep a mental model of every running task. If the document is sufficient, the agent proceeds. If it is insufficient, the agent writes back the missing condition as a blocker or decision request. In either case, the human's attention is not pulled into the runtime.
+
+This is where agent parallelism becomes useful rather than costly. Many agents may run at once, but their activity is mediated through executable documents. Their parallelism does not become parallel interruption.
+
+The intended relation is:
+
+```
+agent capacity scales in parallel
+human attention remains bounded
+```
+
+### **3.3 Decision Queue: judgment without interruption**
+
+No specification is perfect. Some ambiguity will survive clarification. Some tasks will finish and require human judgment. Some agents will encounter blockers that genuinely require a decision. These items should return to the human, but not as interruptions.
+
+The Decision Queue is the channel through which background execution re-enters human attention.
+
+A decision item should carry enough structure to be handled without reconstructing the whole task from memory: source task, question, available options, recommended option if any, reasoning, urgency, reversibility, and expected impact. The point is not to hide uncertainty from the human. The point is to present uncertainty at the right boundary.
+
+Items enter the queue asynchronously. The human engages them deliberately.
+
+Some items are light: approvals, triage, small corrections, or obvious accept/reject decisions. These can be handled during low-intensity intervals. Other items are heavy: architectural tradeoffs, product direction, research interpretation, or disagreement with an agent's proposed path. These should be pulled into a Deep Focus session, because they are not interruptions; they are intent-bound work in their own right.
+
+This gives the queue two roles.
+
+First, it protects Deep Focus by preventing agents from interrupting whenever they encounter ambiguity.
+
+Second, it preserves human judgment by ensuring that unresolved ambiguity still returns to the human, but in a batched and reviewable form.
+
+The queue is therefore not a supervision dashboard. A dashboard invites the human to monitor execution. The Decision Queue exists to avoid monitoring. It is a buffer between agent asynchrony and human attention.
+
+### **3.4 Independent Review Perspective: friction without supervision**
+
+A cycle of human and foreground AI working closely inside the same context has a specific failure mode. The system can become more coherent while becoming narrower.
+
+The foreground AI helps the human elaborate the current direction. It recalls supporting context, sharpens arguments, resolves local ambiguity, and makes the work feel more internally consistent. This is useful during Deep Focus. But the same dynamic can create an epistemic echo chamber. The system may optimize local reasoning while drifting away from external reality, ignoring untested assumptions, or reinforcing a mistaken frame.
+
+The Attention Cycle therefore needs an **independent review perspective**: a structurally separate attention slot whose purpose is to challenge the products of the cycle from *outside* the foreground working context. Its job is to introduce friction, not to continue the work — to ask the questions the cycle is structurally unlikely to ask itself: what assumption has not been tested, where the work has drifted from its stated criteria, which failures are repeating, what external evidence would challenge the current direction, what has become locally coherent but globally questionable.
+
+What makes review work is not a particular implementation, but a single invariant: **independence from the foreground context that produced the work**. A reviewer that inherits the foreground AI's conversation, memory, or framing tends to become a more polite version of the same voice. As long as that independence is preserved, the concrete mechanism is deliberately left open. Review may be a single skeptical agent or several; it may run on a cadence, on workspace events, or on demand; it may be a human playing the role. As model and agent capabilities improve, the instruction may shrink to little more than *"look at this with a critical eye."* The framework's claim is about the *position* of review in the cycle, not its implementation.
+
+Two constraints follow from that position. First, review must not reintroduce runtime supervision: its findings enter the same Decision Queue as any other decision item, to be engaged on the human's terms rather than as interrupts. Second, review must remain a *perspective* rather than an authority — its outputs are inputs to human judgment, not verdicts. With those constraints in place, review can introduce cognitive friction at the right boundary without breaking the rest of the cycle.
+
+### **3.5 The cycle as attention discipline**
+
+The Attention Cycle is not primarily a task workflow. It is an attention discipline.
+
+It keeps apart two kinds of work that current agent interfaces often collapse:
+
+```
+Human attention:
+think, decide, judge, review.
+
+Agent execution:
+search, implement, verify, summarize, write back.
+```
+
+The human remains deeply in the loop, but not continuously in the runtime. Their attention is invested upstream in thinking, protected during execution, reintroduced through batched judgment, and periodically challenged through independent review.
+
+This is the core post-supervision pattern. The system does not aim to eliminate human involvement. It aims to place human involvement where it has the highest leverage.
+
+For intent-bound work, the bottleneck is not how many actions agents can take. It is how well the human's limited attention can specify, direct, and judge those actions. The Attention Cycle lets agent capability keep scaling while keeping human attention bounded.
+
+## **4. Instantiation**
+
+The Attention Cycle does not require building a new agent platform. Its two roles — a foreground AI used as a thinking partner during Deep Focus, and a background agent that executes clarified task documents asynchronously — are both well covered by existing products. A minimal instantiation needs only three pieces: a **chat-agent prompt** that encodes the foreground role (think with the human, materialize converged slices as task documents), a **background-agent prompt** that encodes the execution role (find Ready tasks, execute against the document, write results back), and a thin **document protocol** specifying the small amount of structure the two agents must coordinate on — in practice, a `Status` field (e.g., Ready / In Progress / Needs Review / Done / Blocked) and an explicit `Dependencies` field. Everything else — intent, context, constraints, definition of done, writeback notes, decision requests — stays as ordinary document prose, written, read, and edited in plain language.
+
+With those three pieces, the cycle can be assembled today from off-the-shelf components: any document workspace (Notion, Obsidian, GitHub issues, Linear, plain Markdown), any conversational agent capable of editing that workspace, and any execution-oriented agent capable of running asynchronously and writing back (Hermes, OpenClaw, Codex-style or Claude Code-style coding agents, browser or shell agents). A dedicated product designed end-to-end around the cycle is also a reasonable path; it is not, however, a prerequisite for putting the methodology into practice.
+
+In fact, a fragmented version of this pattern is already in widespread use. Many practitioners today think through problems with one AI tool, manually copy the result into another tool to execute it, then copy the execution result back to continue the discussion. The intuition behind that workflow is exactly the one this paper is articulating: chat is the right medium for thinking, agents are the right medium for executing, and the human moves between them. What is missing is the shared substrate that lets the two sides exchange state directly, the protocol that lets them coordinate without the human as a courier, and the operating rhythm that keeps the human's attention from being shredded by the handoff.
+
+The Attention Cycle is the attempt to streamline that emergent pattern: replace copy-paste between tools with one document the agents share, replace ad-hoc supervision with a Decision Queue, replace the assumption that the foreground agent is also the executor with a clean separation of roles around the document boundary. The contribution is not any specific instantiation; it is that this rhythm is already half-emergent in how people work with AI today, and that pulling it into a single coherent operating model is what frees the scarce resource — human attention — to do the work only it can do.
+
+## 5. Limitations and Conclusion
+
+### **5.1 Limitations**
+
+The Attention Cycle depends on a strong premise: human attention can be protected by moving execution out of the runtime loop and by materializing clarified intent into documents. This premise has several boundary conditions.
+
+**First, not all work is ready to become executable.** The framework applies best when a slice of work has converged enough that intent, constraints, context, and definition of done can be faithfully externalized. In early exploration, tacit-knowledge-heavy craft, or situations where the right question is still forming, premature documentization can become premature commitment. In those cases, conversation should remain exploratory, and the output of Deep Focus may be only a changed human understanding, not an executable task.
+
+**Second, the cycle protects attention; it does not multiply it.** Deep Focus remains expensive, fragile, and non-scalable. The framework can reduce runtime supervision and improve the throughput of clarified intent, but it cannot remove the human cost of forming intent in the first place. If the volume of intent-bound work exceeds the human’s capacity for sustained clarification and judgment, agent parallelism cannot close that gap.
+
+**Third, executable documents can still fail as specifications.** A document may be actionable without being correct. It may omit assumptions, encode weak acceptance criteria, or allow a capable agent to proceed confidently in the wrong direction. The Decision Queue and independent Review perspective are recovery mechanisms for this failure, not proof that the failure has been eliminated.
+
+**Fourth, the framework depends on epistemic and documentary discipline.** Review only works if it remains structurally independent from the foreground context it is meant to challenge. Documents only work as executable contracts if they remain current, linked, and trusted. Prompt drift, accumulated shared context, stale decisions, dead links, and unintegrated writebacks all erode the cycle’s foundation. The Attention Cycle therefore does not remove the need for workspace hygiene and review design; it makes those disciplines central to the system.
+
+### **5.2 Conclusion**
+
+The central argument of this paper is that the next bottleneck in agentic work is not only agent capability, but human attention. As agents become more autonomous and more parallel, under-specified intent does not disappear; it returns as supervision tax. The Attention Cycle reframes this problem: the goal is not to remove the human from the loop, but to move human attention to the places where it has the highest leverage.
+
+This reframing suggests a different direction for agent systems. Instead of treating interaction as a sequence of prompts and responses, systems should treat clarified intent as a durable artifact. Documents are not merely records of work; they can become the coordination substrate through which humans think, agents execute, reviewers challenge, and decisions accumulate. In this view, the document is the boundary between human attention and agent parallelism.
+
+The broader implication is that productivity in the AI era may depend less on how much work agents can do, and more on how well systems protect the scarce attention that gives that work direction. More capable agents make this problem sharper, not weaker. Without better intent formation, autonomy scales execution faster than judgment. With executable documents and a disciplined attention cycle, agent capacity can scale while human attention remains bounded.
+
+Future work should therefore study the Attention Cycle not only as a conceptual model, but as an operational pattern: what document structures make intent executable, what review mechanisms preserve independence, what decision queues minimize interruption without hiding risk, and how much supervision tax can actually be reduced in real workflows. The practical question is not whether humans stay in the loop. They do. The question is where in the loop their attention belongs.

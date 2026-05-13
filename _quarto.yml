@@ -1,0 +1,5 @@
+format:
+  pdf:
+    documentclass: article
+    classoption: [nonatbib, preprint]
+    keep-tex: true
