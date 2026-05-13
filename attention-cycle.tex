@@ -184,8 +184,8 @@
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
 \urlstyle{same}
 \hypersetup{
-  pdftitle={The Attention Cycle: Supervision Tax{,} Executable Documents{,} and Protected Attention},
-  pdfauthor={Leric Zhang},
+  pdftitle={The Attention Cycle: Reducing Supervision Tax through Executable Documents},
+  pdfauthor={Lianghui Zhang},
   pdfkeywords={position paper, supervision tax, document-mediated
 collaboration, intent-bound work, human-AI collaboration, attention
 management, Getting Things Done},
@@ -197,9 +197,9 @@ management, Getting Things Done},
   pdfcreator={LaTeX via pandoc}}
 
 
-\title{The Attention Cycle: Supervision Tax, Executable Documents, and
-Protected Attention}
-\author{Leric Zhang}
+\title{The Attention Cycle: Reducing Supervision Tax through Executable
+Documents}
+\author{Lianghui Zhang}
 \date{}
 \begin{document}
 \maketitle
@@ -219,15 +219,15 @@ attention does not.
 
 This paper proposes \textbf{document-mediated collaboration} as a way to
 cut that tax without removing the human from the loop. The human and a
-foreground AI use deep-focus sessions to think the work through; for the
+foreground AI use Deep Focus sessions to think the work through; for the
 executable slice, they externalize intent, constraints, context, and
 definitions of done into durable task documents. Once clarified, these
 documents become executable contracts for background agents, which work
 asynchronously and write results back. The human re-enters through a
-decision queue and periodic review rather than continuous supervision.
+Decision Queue and periodic Review rather than continuous supervision.
 
 We call this operating rhythm the \textbf{Attention Cycle}: Deep Focus →
-Parallel Execution → Decision Queue, supported by an independent review
+Parallel Execution → Decision Queue, supported by an independent Review
 perspective that prevents the cycle from collapsing into an epistemic
 echo chamber. The cycle treats human attention as the scarce, fragile
 resource it is --- invested in thinking, protected during execution, and
@@ -576,7 +576,7 @@ into a stable artifact a background agent can act on. It records the
 task's intent, context, constraints, accepted decisions, open questions,
 definition of done, and later execution results. It becomes the single
 source of truth for that piece of work: the background agent reads from
-it, the human reviews through it, the review perspective critiques it,
+it, the human reviews through it, the Review perspective critiques it,
 and execution history accumulates back into it.
 
 This is what streamlines the collaboration. For each piece of executable
@@ -607,9 +607,9 @@ clarified intent → durable task document → executable contract
 In this sense, document-mediated collaboration is not simply ``using
 documents with agents.'' It is a coordination pattern with a sharp
 focus: chat is where thinking happens, the knowledge substrate is where
-its durable outputs accumulate, executable task documents are the
-runnable subset of that substrate, and review is where human judgment
-re-enters without continuous monitoring.
+its durable outputs accumulate, task documents are the runnable subset
+of that substrate, and Review is where human judgment re-enters without
+continuous monitoring.
 
 \subsection{\texorpdfstring{\textbf{3. The Attention
 Cycle}}{3. The Attention Cycle}}\label{the-attention-cycle-1}
@@ -799,7 +799,7 @@ echo chamber. The system may optimize local reasoning while drifting
 away from external reality, ignoring untested assumptions, or
 reinforcing a mistaken frame.
 
-The Attention Cycle therefore needs an \textbf{independent review
+The Attention Cycle therefore needs an \textbf{independent Review
 perspective}: a structurally separate attention slot whose purpose is to
 challenge the products of the cycle from \emph{outside} the foreground
 working context. Its job is to introduce friction, not to continue the
@@ -809,7 +809,7 @@ from its stated criteria, which failures are repeating, what external
 evidence would challenge the current direction, what has become locally
 coherent but globally questionable.
 
-What makes review work is not a particular implementation, but a single
+What makes Review work is not a particular implementation, but a single
 invariant: \textbf{independence from the foreground context that
 produced the work}. A reviewer that inherits the foreground AI's
 conversation, memory, or framing tends to become a more polite version
@@ -819,15 +819,15 @@ skeptical agent or several; it may run on a cadence, on workspace
 events, or on demand; it may be a human playing the role. As model and
 agent capabilities improve, the instruction may shrink to little more
 than \emph{``look at this with a critical eye.''} The framework's claim
-is about the \emph{position} of review in the cycle, not its
+is about the \emph{position} of Review in the cycle, not its
 implementation.
 
-Two constraints follow from that position. First, review must not
+Two constraints follow from that position. First, Review must not
 reintroduce runtime supervision: its findings enter the same Decision
 Queue as any other decision item, to be engaged on the human's terms
-rather than as interrupts. Second, review must remain a
+rather than as interrupts. Second, Review must remain a
 \emph{perspective} rather than an authority --- its outputs are inputs
-to human judgment, not verdicts. With those constraints in place, review
+to human judgment, not verdicts. With those constraints in place, Review
 can introduce cognitive friction at the right boundary without breaking
 the rest of the cycle.
 
@@ -882,14 +882,14 @@ done, writeback notes, decision requests --- stays as ordinary document
 prose, written, read, and edited in plain language.
 
 With those three pieces, the cycle can be assembled today from
-off-the-shelf components: any document workspace (Notion, Obsidian,
-GitHub issues, Linear, plain Markdown), any conversational agent capable
-of editing that workspace, and any execution-oriented agent capable of
-running asynchronously and writing back (Hermes, OpenClaw, Codex-style
-or Claude Code-style coding agents, browser or shell agents). A
-dedicated product designed end-to-end around the cycle is also a
-reasonable path; it is not, however, a prerequisite for putting the
-methodology into practice.
+off-the-shelf components: any document workspace that supports
+structured text and version-aware editing, any conversational agent
+capable of editing that workspace, and any execution-oriented agent
+capable of running asynchronously against the documents and writing
+results back --- whether a coding agent, a browser agent, a shell agent,
+or some combination. A dedicated product designed end-to-end around the
+cycle is also a reasonable path; it is not, however, a prerequisite for
+putting the methodology into practice.
 
 In fact, a fragmented version of this pattern is already in widespread
 use. Many practitioners today think through problems with one AI tool,
