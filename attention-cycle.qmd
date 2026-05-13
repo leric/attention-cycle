@@ -8,7 +8,7 @@ abstract: |
   
   This paper proposes **document-mediated collaboration** as a way to cut that tax without removing the human from the loop. The human and a foreground AI use Deep Focus sessions to think the work through; for the executable slice, they externalize intent, constraints, context, and definitions of done into durable task documents. Once clarified, these documents become executable contracts for background agents, which work asynchronously and write results back. The human re-enters through a Decision Queue and periodic Review rather than continuous supervision.
   
-  We call this operating rhythm the **Attention Cycle**: Deep Focus → Parallel Execution → Decision Queue, supported by an independent Review perspective that prevents the cycle from collapsing into an epistemic echo chamber. The cycle treats human attention as the scarce, fragile resource it is — invested in thinking, protected during execution, and re-engaged only at decision boundaries. Empirical validation of supervision-tax reduction is left to future work.
+  We call this operating rhythm the **Attention Cycle**: Deep Focus → Parallel Execution → Decision Queue, supported by an independent Review perspective that prevents the cycle from collapsing into an epistemic echo chamber. The cycle treats human attention as the scarce, fragile resource it is — invested in thinking, protected during execution, and re-engaged only at decision boundaries.
 keywords:
   - position paper
   - supervision tax
@@ -18,10 +18,10 @@ keywords:
   - attention management
   - Getting Things Done
 bibliography: references.bib
-nocite: |
-  @mark2008cost
-  @leroy2009attention
-  @csikszentmihalyi1990flow
+reference-section-title: "References"
+header-includes:
+  - \usepackage{tikz}
+  - \usetikzlibrary{positioning,arrows.meta,calc}
 editor: source
 ---
 
@@ -31,7 +31,7 @@ editor: source
 
 Current agent systems are largely organized around one ambition: make agents more autonomous. They should plan further, run longer, recover from failures, coordinate with tools, and require less human input. For routine, verifiable, well-specified tasks, this is the right direction. If the task is clear, the success condition is objective, and the cost of error is bounded, the best interface is often no interface at all.
 
-But many tasks are not like this. Research, product design, architecture, writing, strategy, and complex engineering belong to what we will call **intent-bound work**: work whose value depends on *what should be done*, not only on whether the doing is technically correct. In intent-bound work, deciding what to attempt, what to leave out, and what "good" means is itself most of the value. The human is not in the loop because they type commands; they are in the loop because they supply intent, judgment, taste, context, and accountability. Removing them does not save labor — it removes the source of value.
+But many tasks are not like this. Research, product design, architecture, writing, strategy, and complex engineering belong to what we will call **intent-bound work**: work whose value depends on *what should be done*, not only on whether the doing is technically correct. In intent-bound work, deciding what to attempt, what to leave out, and what "good" means is itself most of the value. The human is not in the loop because they type commands; they are in the loop because they supply intent, judgment, taste, context, and accountability — a role long emphasized in mixed-initiative and human-in-the-loop systems [@horvitz1999principles; @amershi2014power]. Removing them does not save labor — it removes the source of value.
 
 The real problem is therefore not how to remove the human. It is how to remove the wrong kind of human involvement.
 
@@ -54,7 +54,7 @@ This gives the first half of the paper's opening claim:
 > Autonomy does not eliminate supervision when intent is under-specified; it relocates it from the agent's runtime into the human's attention.
 > 
 
-The second half follows from how autonomy scales. One agent on under-specified intent produces a stream of clarification requests, partial outputs, and decision points flowing back to the human. Ten agents in parallel produce ten such streams converging on the same attention. Parallelism does not absorb under-specification; it concentrates it into more concurrent surface area than one human can keep up with:
+The second half follows from how autonomy scales. One agent on under-specified intent produces a stream of clarification requests, partial outputs, and decision points flowing back to the human. Ten agents in parallel — increasingly plausible as multi-agent frameworks mature [@wu2023autogen; @hong2024metagpt] — produce ten such streams converging on the same attention. Parallelism does not absorb under-specification; it concentrates it into more concurrent surface area than one human can keep up with:
 
 > The more parallel the agents, the more under-specified intent amplifies into supervision tax — clarification load scales with agents; human attention does not.
 > 
@@ -63,7 +63,7 @@ Supervision tax is therefore not a UI problem nor a temporary model limitation. 
 
 ### 1.3 AI-assisted clarification and executable documents
 
-The frontier of agent design is moving in exactly the direction that the previous section made worrying: toward longer-running, more autonomous agents. The ambition is to run further on each invocation, recover from more failures, coordinate more tools, and call back to the human less often. For routine work, this is genuine progress. For intent-bound work, however, it raises the bar on what the agent is given to start with. The longer and more autonomously an agent operates, the more weight its initial specification has to carry — every gap, ambiguity, or unstated constraint becomes either an unsupervised wrong turn or a runtime callback to the human. **More-autonomous agents do not weaken the demand for clarified intent; they sharpen it.**
+The frontier of agent design is moving in exactly the direction that the previous section made worrying: toward longer-running, more autonomous agents. Recent systems and papers make this direction explicit: planner/executor architectures target long-horizon web tasks, research agents chain browsing, analysis, and synthesis, frontier coding agents report sustained tool-using workflows, and stateful workbenches are emerging for long-running mathematical collaboration [@erdogan2025planandact; @openai2025deepresearch; @anthropic2025claude4; @zheng2026comathematician]. The ambition is to run further on each invocation, recover from more failures, coordinate more tools, and call back to the human less often. For routine work, this is genuine progress. For intent-bound work, however, it raises the bar on what the agent is given to start with. The longer and more autonomously an agent operates, the more weight its initial specification has to carry — every gap, ambiguity, or unstated constraint becomes either an unsupervised wrong turn or a runtime callback to the human. **More-autonomous agents do not weaken the demand for clarified intent; they sharpen it.**
 
 Producing clarified intent of that quality is itself difficult, and it is where chat-form AI is at its strongest. A capable foreground AI is a *thinking partner* — exposing ambiguity, pushing back on vague claims, forcing precision — which makes the intent-bound work that resists agent automation paradoxically well-served by AI as a discussion medium. The pattern this paper proposes is to use that strength deliberately: the human and a foreground AI think the work through together, and materialize the parts ready to commit as durable documents that background agents can act on. §2 develops the document side; §3 develops the attention rhythm around it.
 
@@ -86,7 +86,7 @@ It is scarce in **quality**, in a way pure budgeting misses. The deep, sustained
 
 Making upstream clarification efficient is therefore an attention-management problem. The cycle has two jobs: spend the human's limited attention only where it adds value, and *protect* the uninterrupted focus state under which that attention is actually worth spending.
 
-The inspiration comes from **Getting Things Done**: externalize open loops into a trusted system so nothing competes for attention except what genuinely needs it now. Document-mediated collaboration extends that move into AI-mediated work — once intent is materialized into an executable document, the running task lives in the document and the agents acting on it, not in the human's head.
+The inspiration comes from **Getting Things Done** [@allen2001getting]: externalize open loops into a trusted system so nothing competes for attention except what genuinely needs it now. Document-mediated collaboration extends that move into AI-mediated work — once intent is materialized into an executable document, the running task lives in the document and the agents acting on it, not in the human's head.
 
 The **Attention Cycle** turns these principles into an operating rhythm:
 
@@ -95,6 +95,52 @@ Deep Focus → Parallel Execution → Decision Queue → Deep Focus
 ```
 
 with **Review** as a structurally separate attention slot that challenges the cycle from outside. Each phase is defined by the *kind* of attention it requires — or deliberately does not: **Deep Focus** is undivided attention spent thinking with a foreground AI; **Parallel Execution** requires none; **Decision Queue** batches judgment on the human's terms; **Review** is a context-independent perspective that keeps the cycle from collapsing into an echo chamber. §3 develops each phase in turn.
+
+Figure&nbsp;\ref{fig:attention-cycle} summarizes the cycle as a single diagram.
+
+```{=latex}
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[
+  node distance=0.85cm and 2.2cm,
+  box/.style={
+    draw, rounded corners=3pt, thick,
+    minimum width=4.2cm, minimum height=0.9cm,
+    align=center, font=\sffamily\bfseries
+  },
+  doc/.style={
+    draw, rounded corners=3pt, thick, fill=black!5,
+    minimum width=4.2cm, minimum height=0.9cm,
+    align=center, font=\sffamily
+  },
+  review/.style={
+    draw, dashed, rounded corners=3pt, thick,
+    minimum width=2.8cm, minimum height=0.9cm,
+    align=center, font=\sffamily\bfseries
+  },
+  arr/.style={-{Stealth[length=2.5mm]}, thick},
+  darr/.style={-{Stealth[length=2.5mm]}, thick, dashed},
+  lbl/.style={font=\footnotesize\itshape, midway}
+]
+  \node[box] (df) {Deep Focus};
+  \node[doc, below=of df] (ed) {Executable Documents};
+  \node[box, below=of ed] (pe) {Parallel Execution};
+  \node[box, below=of pe] (dq) {Decision Queue};
+
+  \draw[arr] (df) -- node[right, lbl] {produces} (ed);
+  \draw[arr] (ed) -- node[right, lbl] {enable}   (pe);
+  \draw[arr] (pe) -- node[right, lbl] {writes}   (dq);
+
+  \draw[arr] (dq.west) .. controls ++(-3.2,0) and ++(-3.2,0) ..
+    node[left, lbl, align=center] {returns to} (df.west);
+
+  \node[review, right=2.4cm of pe] (rv) {Review};
+  \draw[darr] (rv.south) |- node[pos=0.75, above, lbl] {findings} (dq.east);
+\end{tikzpicture}
+\caption{\textbf{The Attention Cycle.} Deep Focus produces executable documents that enable asynchronous parallel agent execution; results return through a Decision Queue and feed back into the next Deep Focus session. Review sits structurally outside the cycle and feeds independent findings into the queue rather than into the foreground context.}
+\label{fig:attention-cycle}
+\end{figure}
+```
 
 ### 1.5 Contributions
 
@@ -151,12 +197,12 @@ A chat session is a good medium for thinking, but a poor substrate for asynchron
 
 Not all of those products are task documents. The same document workspace naturally accumulates a broader **knowledge substrate**: notes, plans, framings, decisions, reference syntheses, and other durable outputs of Deep Focus that are not themselves executable. Task documents live alongside this substrate, link into it for context, and are read by background agents against it. The substrate is the surrounding ground that makes any single task document coherent. The framework assumes such a substrate exists and is reasonably maintained, but it does not propose a knowledge-management methodology of its own. Curation of the substrate is a real concern (§5.1); it is not the subject of this paper.
 
-Within that substrate, a **task document** is the *executable subset* — the kind of document that turns a clarified slice of intent into a stable artifact a background agent can act on. It records the task’s intent, context, constraints, accepted decisions, open questions, definition of done, and later execution results. It becomes the single source of truth for that piece of work: the background agent reads from it, the human reviews through it, the Review perspective critiques it, and execution history accumulates back into it.
+Within that substrate, a **task document** is the *executable subset* — the kind of document that turns a clarified slice of intent into a stable artifact a background agent can act on. It serves as a coordination artifact in the sense of a boundary object [@star1989institutional]: a single shared thing that several roles interpret differently while still treating it as the same thing. It also serves as an executable specification in the sense developed for agile teams, where worked examples and acceptance criteria are written so that they can both be read by humans and run against the system [@adzic2011specification]. Concretely, it records the task’s intent, context, constraints, accepted decisions, open questions, definition of done, and later execution results. It becomes the single source of truth for that piece of work: the background agent reads from it, the human reviews through it, the Review perspective critiques it, and execution history accumulates back into it.
 
 This is what streamlines the collaboration. For each piece of executable work, clarification, execution, and review no longer fragment across chat threads, agent logs, and side notes that must be reconciled later. They flow through one artifact:
 
 ```
-conversation → task document → agent execution → writeback → review
+conversation → task document → agent execution → writeback → Review
 ```
 
 The document becomes an **executable contract** when it is rich enough for a background agent to act on and explicit enough for completion to be judged without returning to the human for live clarification. It does not need to encode everything as rigid fields. Much of the specification can remain prose. What matters is that the document — together with the surrounding knowledge substrate it links into — carries enough context, constraints, and acceptance criteria for the agent to know whether it should complete the task, report a blocker, or raise a decision request.
@@ -195,10 +241,10 @@ The output of Deep Focus is, first, progress in the human’s understanding of t
 
 What sets Deep Focus apart from ordinary attentive work is *uninterruption*. The quality of thinking does not scale linearly with minutes spent on a problem; it scales with whether those minutes are continuous enough to enter the cognitive states where deep work actually happens. Two effects on the negative side make this asymmetry sharp:
 
-- **Recovery cost.** Empirical studies of knowledge workers find that after an interruption, the average time to return to the original task at comparable depth is on the order of 23 minutes (Mark et al., 2008). The minute spent answering the interruption is a small fraction of its real cost.
-- **Attention residue.** Even when the interrupting task is brief, part of attention remains attached to the prior context (Leroy, 2009); the worker's effective cognitive bandwidth on the resumed task is degraded for some time afterward.
+- **Recovery cost.** Empirical studies of knowledge workers find that after an interruption, the average time to return to the original task at comparable depth is on the order of 23 minutes [@mark2008cost]. The minute spent answering the interruption is a small fraction of its real cost.
+- **Attention residue.** Even when the interrupting task is brief, part of attention remains attached to the prior context [@leroy2009attention]; the worker's effective cognitive bandwidth on the resumed task is degraded for some time afterward.
 
-Flow research adds the positive-side counterpart: when uninterrupted focus is sustained long enough, the worker enters a state in which performance on cognitively demanding work is substantially elevated above baseline (Csikszentmihalyi, 1990). Flow is fragile — a single interruption can dissolve it — and not reliably re-enterable on the same day.
+Flow research adds the positive-side counterpart: when uninterrupted focus is sustained long enough, workers may enter a state in which cognitive work becomes more fluent, coherent, and productive. [@csikszentmihalyi1990flow]. Flow is fragile — a single interruption can dissolve it — and not reliably re-enterable on the same day.
 
 The compound effect is that Deep Focus is not merely attention-expensive but attention-fragile, and the value lost to interruption is non-linear in interruption frequency. Thinking a problem through to coherence — and, where ready, externalizing it as an executable contract whose intent, constraints, context, and acceptance criteria fit together — depends on assembling exactly this kind of attention, which is far easier to break than to rebuild.
 
@@ -251,7 +297,7 @@ The foreground AI helps the human elaborate the current direction. It recalls su
 
 The Attention Cycle therefore needs an **independent Review perspective**: a structurally separate attention slot whose purpose is to challenge the products of the cycle from *outside* the foreground working context. Its job is to introduce friction, not to continue the work — to ask the questions the cycle is structurally unlikely to ask itself: what assumption has not been tested, where the work has drifted from its stated criteria, which failures are repeating, what external evidence would challenge the current direction, what has become locally coherent but globally questionable.
 
-What makes Review work is not a particular implementation, but a single invariant: **independence from the foreground context that produced the work**. A reviewer that inherits the foreground AI's conversation, memory, or framing tends to become a more polite version of the same voice. As long as that independence is preserved, the concrete mechanism is deliberately left open. Review may be a single skeptical agent or several; it may run on a cadence, on workspace events, or on demand; it may be a human playing the role. As model and agent capabilities improve, the instruction may shrink to little more than *"look at this with a critical eye."* The framework's claim is about the *position* of Review in the cycle, not its implementation.
+What makes Review work is not a particular implementation, but a single invariant: **independence from the foreground context that produced the work**. A reviewer that inherits the foreground AI's conversation, memory, or framing tends to become a more polite version of the same voice. As long as that independence is preserved, the concrete mechanism is deliberately left open. Review may be a single skeptical agent or several; it may run on a cadence, on workspace events, or on demand; it may be a human playing the role. As model and agent capabilities improve, the instruction may shrink to little more than *"look at this with a critical eye."*  The framework's claim is about the *position* of Review in the cycle, not its implementation.
 
 Two constraints follow from that position. First, Review must not reintroduce runtime supervision: its findings enter the same Decision Queue as any other decision item, to be engaged on the human's terms rather than as interrupts. Second, Review must remain a *perspective* rather than an authority — its outputs are inputs to human judgment, not verdicts. With those constraints in place, Review can introduce cognitive friction at the right boundary without breaking the rest of the cycle.
 
@@ -305,6 +351,6 @@ The central argument of this paper is that the next bottleneck in agentic work i
 
 This reframing suggests a different direction for agent systems. Instead of treating interaction as a sequence of prompts and responses, systems should treat clarified intent as a durable artifact. Documents are not merely records of work; they can become the coordination substrate through which humans think, agents execute, reviewers challenge, and decisions accumulate. In this view, the document is the boundary between human attention and agent parallelism.
 
-The broader implication is that productivity in the AI era may depend less on how much work agents can do, and more on how well systems protect the scarce attention that gives that work direction. More capable agents make this problem sharper, not weaker. Without better intent formation, autonomy scales execution faster than judgment. With executable documents and a disciplined attention cycle, agent capacity can scale while human attention remains bounded.
+The broader implication is that productivity in the AI era may depend less on how much work agents can do, and more on how well systems protect the scarce attention that gives that work direction. More capable agents make this problem sharper, not weaker. Without better intent formation, autonomy scales execution faster than judgment. With executable documents and a disciplined Attention Cycle, agent capacity can scale while human attention remains bounded.
 
 Future work should therefore study the Attention Cycle not only as a conceptual model, but as an operational pattern: what document structures make intent executable, what review mechanisms preserve independence, what decision queues minimize interruption without hiding risk, and how much supervision tax can actually be reduced in real workflows. The practical question is not whether humans stay in the loop. They do. The question is where in the loop their attention belongs.

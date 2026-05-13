@@ -139,6 +139,8 @@
  
 
 
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta,calc}
 \makeatletter
 \@ifpackageloaded{caption}{}{\usepackage{caption}}
 \AtBeginDocument{%
@@ -231,8 +233,7 @@ Parallel Execution → Decision Queue, supported by an independent Review
 perspective that prevents the cycle from collapsing into an epistemic
 echo chamber. The cycle treats human attention as the scarce, fragile
 resource it is --- invested in thinking, protected during execution, and
-re-engaged only at decision boundaries. Empirical validation of
-supervision-tax reduction is left to future work.
+re-engaged only at decision boundaries.
 \end{abstract}
 
 
@@ -255,8 +256,10 @@ we will call \textbf{intent-bound work}: work whose value depends on
 correct. In intent-bound work, deciding what to attempt, what to leave
 out, and what ``good'' means is itself most of the value. The human is
 not in the loop because they type commands; they are in the loop because
-they supply intent, judgment, taste, context, and accountability.
-Removing them does not save labor --- it removes the source of value.
+they supply intent, judgment, taste, context, and accountability --- a
+role long emphasized in mixed-initiative and human-in-the-loop systems
+(Horvitz 1999; Amershi et al. 2014). Removing them does not save labor
+--- it removes the source of value.
 
 The real problem is therefore not how to remove the human. It is how to
 remove the wrong kind of human involvement.
@@ -309,10 +312,11 @@ it relocates it from the agent's runtime into the human's attention.
 The second half follows from how autonomy scales. One agent on
 under-specified intent produces a stream of clarification requests,
 partial outputs, and decision points flowing back to the human. Ten
-agents in parallel produce ten such streams converging on the same
-attention. Parallelism does not absorb under-specification; it
-concentrates it into more concurrent surface area than one human can
-keep up with:
+agents in parallel --- increasingly plausible as multi-agent frameworks
+mature (Wu et al. 2023; Hong et al. 2024) --- produce ten such streams
+converging on the same attention. Parallelism does not absorb
+under-specification; it concentrates it into more concurrent surface
+area than one human can keep up with:
 
 \begin{quote}
 The more parallel the agents, the more under-specified intent amplifies
@@ -329,15 +333,21 @@ documents}\label{ai-assisted-clarification-and-executable-documents}
 
 The frontier of agent design is moving in exactly the direction that the
 previous section made worrying: toward longer-running, more autonomous
-agents. The ambition is to run further on each invocation, recover from
-more failures, coordinate more tools, and call back to the human less
-often. For routine work, this is genuine progress. For intent-bound
-work, however, it raises the bar on what the agent is given to start
-with. The longer and more autonomously an agent operates, the more
-weight its initial specification has to carry --- every gap, ambiguity,
-or unstated constraint becomes either an unsupervised wrong turn or a
-runtime callback to the human. \textbf{More-autonomous agents do not
-weaken the demand for clarified intent; they sharpen it.}
+agents. Recent systems and papers make this direction explicit:
+planner/executor architectures target long-horizon web tasks, research
+agents chain browsing, analysis, and synthesis, frontier coding agents
+report sustained tool-using workflows, and stateful workbenches are
+emerging for long-running mathematical collaboration (Erdogan et al.
+2025; OpenAI 2025; Anthropic 2025; Zheng et al. 2026). The ambition is
+to run further on each invocation, recover from more failures,
+coordinate more tools, and call back to the human less often. For
+routine work, this is genuine progress. For intent-bound work, however,
+it raises the bar on what the agent is given to start with. The longer
+and more autonomously an agent operates, the more weight its initial
+specification has to carry --- every gap, ambiguity, or unstated
+constraint becomes either an unsupervised wrong turn or a runtime
+callback to the human. \textbf{More-autonomous agents do not weaken the
+demand for clarified intent; they sharpen it.}
 
 Producing clarified intent of that quality is itself difficult, and it
 is where chat-form AI is at its strongest. A capable foreground AI is a
@@ -400,12 +410,12 @@ limited attention only where it adds value, and \emph{protect} the
 uninterrupted focus state under which that attention is actually worth
 spending.
 
-The inspiration comes from \textbf{Getting Things Done}: externalize
-open loops into a trusted system so nothing competes for attention
-except what genuinely needs it now. Document-mediated collaboration
-extends that move into AI-mediated work --- once intent is materialized
-into an executable document, the running task lives in the document and
-the agents acting on it, not in the human's head.
+The inspiration comes from \textbf{Getting Things Done} (Allen 2001):
+externalize open loops into a trusted system so nothing competes for
+attention except what genuinely needs it now. Document-mediated
+collaboration extends that move into AI-mediated work --- once intent is
+materialized into an executable document, the running task lives in the
+document and the agents acting on it, not in the human's head.
 
 The \textbf{Attention Cycle} turns these principles into an operating
 rhythm:
@@ -423,6 +433,51 @@ foreground AI; \textbf{Parallel Execution} requires none;
 \textbf{Review} is a context-independent perspective that keeps the
 cycle from collapsing into an echo chamber. §3 develops each phase in
 turn.
+
+Figure~\ref{fig:attention-cycle} summarizes the cycle as a single
+diagram.
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[
+  node distance=0.85cm and 2.2cm,
+  box/.style={
+    draw, rounded corners=3pt, thick,
+    minimum width=4.2cm, minimum height=0.9cm,
+    align=center, font=\sffamily\bfseries
+  },
+  doc/.style={
+    draw, rounded corners=3pt, thick, fill=black!5,
+    minimum width=4.2cm, minimum height=0.9cm,
+    align=center, font=\sffamily
+  },
+  review/.style={
+    draw, dashed, rounded corners=3pt, thick,
+    minimum width=2.8cm, minimum height=0.9cm,
+    align=center, font=\sffamily\bfseries
+  },
+  arr/.style={-{Stealth[length=2.5mm]}, thick},
+  darr/.style={-{Stealth[length=2.5mm]}, thick, dashed},
+  lbl/.style={font=\footnotesize\itshape, midway}
+]
+  \node[box] (df) {Deep Focus};
+  \node[doc, below=of df] (ed) {Executable Documents};
+  \node[box, below=of ed] (pe) {Parallel Execution};
+  \node[box, below=of pe] (dq) {Decision Queue};
+
+  \draw[arr] (df) -- node[right, lbl] {produces} (ed);
+  \draw[arr] (ed) -- node[right, lbl] {enable}   (pe);
+  \draw[arr] (pe) -- node[right, lbl] {writes}   (dq);
+
+  \draw[arr] (dq.west) .. controls ++(-3.2,0) and ++(-3.2,0) ..
+    node[left, lbl, align=center] {returns to} (df.west);
+
+  \node[review, right=2.4cm of pe] (rv) {Review};
+  \draw[darr] (rv.south) |- node[pos=0.75, above, lbl] {findings} (dq.east);
+\end{tikzpicture}
+\caption{\textbf{The Attention Cycle.} Deep Focus produces executable documents that enable asynchronous parallel agent execution; results return through a Decision Queue and feed back into the next Deep Focus session. Review sits structurally outside the cycle and feeds independent findings into the queue rather than into the foreground context.}
+\label{fig:attention-cycle}
+\end{figure}
 
 \subsubsection{1.5 Contributions}\label{contributions}
 
@@ -572,12 +627,19 @@ subject of this paper.
 
 Within that substrate, a \textbf{task document} is the \emph{executable
 subset} --- the kind of document that turns a clarified slice of intent
-into a stable artifact a background agent can act on. It records the
-task's intent, context, constraints, accepted decisions, open questions,
-definition of done, and later execution results. It becomes the single
-source of truth for that piece of work: the background agent reads from
-it, the human reviews through it, the Review perspective critiques it,
-and execution history accumulates back into it.
+into a stable artifact a background agent can act on. It serves as a
+coordination artifact in the sense of a boundary object (Star and
+Griesemer 1989): a single shared thing that several roles interpret
+differently while still treating it as the same thing. It also serves as
+an executable specification in the sense developed for agile teams,
+where worked examples and acceptance criteria are written so that they
+can both be read by humans and run against the system (Adzic 2011).
+Concretely, it records the task's intent, context, constraints, accepted
+decisions, open questions, definition of done, and later execution
+results. It becomes the single source of truth for that piece of work:
+the background agent reads from it, the human reviews through it, the
+Review perspective critiques it, and execution history accumulates back
+into it.
 
 This is what streamlines the collaboration. For each piece of executable
 work, clarification, execution, and review no longer fragment across
@@ -585,7 +647,7 @@ chat threads, agent logs, and side notes that must be reconciled later.
 They flow through one artifact:
 
 \begin{verbatim}
-conversation → task document → agent execution → writeback → review
+conversation → task document → agent execution → writeback → Review
 \end{verbatim}
 
 The document becomes an \textbf{executable contract} when it is rich
@@ -675,12 +737,12 @@ sharp:
 \item
   \textbf{Recovery cost.} Empirical studies of knowledge workers find
   that after an interruption, the average time to return to the original
-  task at comparable depth is on the order of 23 minutes (Mark et al.,
+  task at comparable depth is on the order of 23 minutes (Mark et al.
   2008). The minute spent answering the interruption is a small fraction
   of its real cost.
 \item
   \textbf{Attention residue.} Even when the interrupting task is brief,
-  part of attention remains attached to the prior context (Leroy, 2009);
+  part of attention remains attached to the prior context (Leroy 2009);
   the worker's effective cognitive bandwidth on the resumed task is
   degraded for some time afterward.
 \end{itemize}
@@ -688,7 +750,7 @@ sharp:
 Flow research adds the positive-side counterpart: when uninterrupted
 focus is sustained long enough, the worker enters a state in which
 performance on cognitively demanding work is substantially elevated
-above baseline (Csikszentmihalyi, 1990). Flow is fragile --- a single
+above baseline (Csikszentmihalyi 1990). Flow is fragile --- a single
 interruption can dissolve it --- and not reliably re-enterable on the
 same day.
 
@@ -981,7 +1043,7 @@ less on how much work agents can do, and more on how well systems
 protect the scarce attention that gives that work direction. More
 capable agents make this problem sharper, not weaker. Without better
 intent formation, autonomy scales execution faster than judgment. With
-executable documents and a disciplined attention cycle, agent capacity
+executable documents and a disciplined Attention Cycle, agent capacity
 can scale while human attention remains bounded.
 
 Future work should therefore study the Attention Cycle not only as a
@@ -993,11 +1055,47 @@ workflows. The practical question is not whether humans stay in the
 loop. They do. The question is where in the loop their attention
 belongs.
 
+\section*{References}\label{bibliography}
+\addcontentsline{toc}{section}{References}
+
 \protect\phantomsection\label{refs}
 \begin{CSLReferences}{1}{1}
+\bibitem[\citeproctext]{ref-adzic2011specification}
+Adzic, Gojko. 2011. \emph{Specification by Example: How Successful Teams
+Deliver the Right Software}. Manning Publications.
+
+\bibitem[\citeproctext]{ref-allen2001getting}
+Allen, David. 2001. \emph{Getting Things Done: The Art of Stress-Free
+Productivity}. Penguin.
+
+\bibitem[\citeproctext]{ref-amershi2014power}
+Amershi, Saleema, Maya Cakmak, William Bradley Knox, and Todd Kulesza.
+2014. {``Power to the People: The Role of Humans in Interactive Machine
+Learning.''} \emph{AI Magazine} 35 (4): 105--20.
+
+\bibitem[\citeproctext]{ref-anthropic2025claude4}
+Anthropic. 2025. \emph{Claude Opus 4 and Claude Sonnet 4 System Card}.
+\url{https://www-cdn.anthropic.com/4263b940cabb546aa0e3283f35b686f4f3b2ff47.pdf}.
+
 \bibitem[\citeproctext]{ref-csikszentmihalyi1990flow}
 Csikszentmihalyi, Mihaly. 1990. \emph{Flow: The Psychology of Optimal
 Experience}. Harper; Row.
+
+\bibitem[\citeproctext]{ref-erdogan2025planandact}
+Erdogan, Lutfi Eren, Nicholas Lee, Sehoon Kim, et al. 2025.
+{``{PLAN-AND-ACT}: Improving Planning of Agents for Long-Horizon
+Tasks.''} \emph{arXiv Preprint arXiv:2503.09572}, ahead of print.
+\url{https://doi.org/10.48550/arXiv.2503.09572}.
+
+\bibitem[\citeproctext]{ref-hong2024metagpt}
+Hong, Sirui, Mingchen Zhuge, Jonathan Chen, et al. 2024. {``{MetaGPT}:
+Meta Programming for a Multi-Agent Collaborative Framework.''} \emph{The
+Twelfth International Conference on Learning Representations (ICLR)}.
+
+\bibitem[\citeproctext]{ref-horvitz1999principles}
+Horvitz, Eric. 1999. {``Principles of Mixed-Initiative User
+Interfaces.''} \emph{Proceedings of the SIGCHI Conference on Human
+Factors in Computing Systems (CHI)}, 159--66.
 
 \bibitem[\citeproctext]{ref-leroy2009attention}
 Leroy, Sophie. 2009. {``Why Is It so Hard to Do My Work? The Challenge
@@ -1009,6 +1107,27 @@ of Attention Residue When Switching Between Work Tasks.''}
 Mark, Gloria, Daniel Gudith, and Ulrich Klocke. 2008. {``The Cost of
 Interrupted Work: More Speed and Stress.''} \emph{Proceedings of the ACM
 Conference on Human Factors in Computing Systems (CHI)}, 107--10.
+
+\bibitem[\citeproctext]{ref-openai2025deepresearch}
+OpenAI. 2025. \emph{Deep Research System Card}.
+\url{https://cdn.openai.com/deep-research-system-card.pdf}.
+
+\bibitem[\citeproctext]{ref-star1989institutional}
+Star, Susan Leigh, and James R. Griesemer. 1989. {``Institutional
+Ecology, {`Translations'} and Boundary Objects: Amateurs and
+Professionals in Berkeley's Museum of Vertebrate Zoology, 1907--39.''}
+\emph{Social Studies of Science} 19 (3): 387--420.
+
+\bibitem[\citeproctext]{ref-wu2023autogen}
+Wu, Qingyun, Gagan Bansal, Jieyu Zhang, et al. 2023. {``{AutoGen}:
+Enabling Next-Gen {LLM} Applications via Multi-Agent Conversation
+Framework.''} \emph{arXiv Preprint arXiv:2308.08155}.
+
+\bibitem[\citeproctext]{ref-zheng2026comathematician}
+Zheng, Daniel, Ingrid von Glehn, Yori Zwols, et al. 2026. {``{AI}
+Co-Mathematician: Accelerating Mathematicians with Agentic {AI}.''}
+\emph{arXiv Preprint arXiv:2605.06651}, ahead of print.
+\url{https://doi.org/10.48550/arXiv.2605.06651}.
 
 \end{CSLReferences}
 
