@@ -5,9 +5,9 @@ author:
     affiliation: "Independent Researcher"
 abstract: |
   *This is a position paper.* Current agent systems pursue autonomy by making agents run longer with less human input. For well-defined, verifiable tasks this is the right direction. But for **intent-bound work** — work whose value depends on deciding *what* should be done, not only on doing it correctly — the bottleneck is not agent autonomy but intent specification. When intent is under-specified, autonomy does not remove supervision; it converts the human into a runtime specifier who clarifies, redirects, approves, and repairs agent work as ambiguities surface during execution. We call this continuous attention cost the **supervision tax** of under-specified intent, and it scales with agent parallelism while human attention does not.
-  
+
   This paper proposes **document-mediated collaboration** as a way to cut that tax without removing the human from the loop. The human and a foreground AI use Deep Focus sessions to think the work through; for the executable slice, they externalize intent, constraints, context, and definitions of done into durable task documents. Once clarified, these documents become executable contracts for background agents, which work asynchronously and write results back. The human re-enters through a Decision Queue and periodic Review rather than continuous supervision.
-  
+
   We call this operating rhythm the **Attention Cycle**: Deep Focus → Parallel Execution → Decision Queue, supported by an independent Review perspective that prevents the cycle from collapsing into an epistemic echo chamber. The cycle treats human attention as the scarce, fragile resource it is — invested in thinking, protected during execution, and re-engaged only at decision boundaries.
 keywords:
   - position paper
@@ -52,25 +52,25 @@ At that point, the human becomes a runtime specifier. They clarify what should h
 This gives the first half of the paper's opening claim:
 
 > Autonomy does not eliminate supervision when intent is under-specified; it relocates it from the agent's runtime into the human's attention.
-> 
+>
 
 The second half follows from how autonomy scales. As agent systems become capable of running more work asynchronously and concurrently, the scarce resource is no longer agent action but human attention. One agent working on under-specified intent produces a stream of clarification requests, partial outputs, and decision points flowing back to the human. Ten such agents produce ten streams converging on the same attention. Parallelism does not absorb under-specification; it concentrates it into more concurrent surface area than one human can keep up with:
 
 > The more parallel the agents, the more under-specified intent amplifies into supervision tax — clarification load scales with agents; human attention does not.
-> 
+>
 
 Supervision tax is therefore not a UI problem nor a temporary model limitation. It is the runtime cost of skipped clarification, scaled by parallelism.
 
 ### 1.3 AI-assisted clarification and executable documents
 
-The frontier of agent design is moving in exactly the direction that the previous section made worrying: toward longer-running, more autonomous, tool-using agents. Recent research and coding agents make this direction explicit: they extend the duration, tool use, and independence of agent workflows[@openai2025deepresearch; @anthropic2025claude4]. The ambition is to run further on each invocation, recover from more failures, coordinate more tools, and call back to the human less often. For routine work, this is genuine progress. For intent-bound work, however, it raises the bar on what the agent is given to start with. The longer and more autonomously an agent operates, the more weight its initial specification has to carry — every gap, ambiguity, or unstated constraint becomes either an unsupervised wrong turn or a runtime callback to the human. **More-autonomous agents do not weaken the demand for clarified intent; they sharpen it.**
+The frontier of agent design is moving in exactly the direction that the previous section made worrying: toward longer-running, more autonomous, tool-using agents. Recent research and coding agents make this direction explicit: they extend the duration, tool use, and independence of agent workflows [@openai2025deepresearch; @anthropic2025claude4]. The ambition is to run further on each invocation, recover from more failures, coordinate more tools, and call back to the human less often. For routine work, this is genuine progress. For intent-bound work, however, it raises the bar on what the agent is given to start with. The longer and more autonomously an agent operates, the more weight its initial specification has to carry — every gap, ambiguity, or unstated constraint becomes either an unsupervised wrong turn or a runtime callback to the human. **More-autonomous agents do not weaken the demand for clarified intent; they sharpen it.**
 
 Producing clarified intent of that quality is itself difficult, and it is where chat-form AI is at its strongest. Recent work on conversational human-AI interaction similarly identifies goal ambiguity and prompt articulation as central design problems [@caetano2025agenticworkflowsconversationalhumanai]. A capable foreground AI is a *thinking partner* — exposing ambiguity, pushing back on vague claims, forcing precision — which makes the intent-bound work that resists agent automation paradoxically well-served by AI as a discussion medium. The pattern this paper proposes is to use that strength deliberately: the human and a foreground AI think the work through together, and materialize the parts ready to commit as durable documents that background agents can act on. §2 develops the document side; §3 develops the attention rhythm around it.
 
 This gives the operating pattern this paper proposes:
 
 > **Document-mediated collaboration.** A human and a foreground AI clarify intent together in conversation; the result of that clarification is materialized as an executable document; background agents act on the document asynchronously and write results back; the human re-enters through review and decision rather than continuous supervision.
-> 
+>
 
 Chat is where thinking happens. Documents are where clarified intent runs.
 
@@ -82,7 +82,7 @@ Attention is scarce in two senses, and the cycle has to address both.
 
 It is scarce in **quantity**. Recall §1.2's closing line: *clarification load scales with agents; human attention does not.* As more agents run in parallel, more clarification work converges on one fixed attention budget. Throwing capacity at the problem does not work, because there is only one head.
 
-It is scarce in **quality**, in a way pure budgeting misses. The deep, sustained focus that clarification work depends on takes effort to enter, is easily disrupted, and is slow to rebuild. The real cost of an interruption is not the minute spent answering it; it is the focus state that has to be reconstructed afterward — and the flow state, if any, that is lost in the process. The payoff of *protected* attention is therefore non-linear: one uninterrupted hour routinely outperforms two half-hours fragmented by clarification pings, and a sustained flow state can outperform either by a wide margin.
+It is scarce in **quality**, in a way pure budgeting misses. The deep, sustained focus that clarification work depends on takes effort to enter, is easily disrupted, and is slow to rebuild. The real cost of an interruption is not the minute spent answering it; it is the focus state that has to be reconstructed afterward — and the flow state, if any, that is lost in the process. The payoff of *protected* attention is therefore non-linear: one uninterrupted hour can outperforms two half-hours fragmented by clarification pings, and a sustained flow state can outperform either by a wide margin.
 
 Making upstream clarification efficient is therefore an attention-management problem. The cycle has two jobs: spend the human's limited attention only where it adds value, and *protect* the uninterrupted focus state under which that attention is actually worth spending.
 
